@@ -3,6 +3,8 @@ package com.udacity.tulio.sunshine;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,7 +60,10 @@ public class MainActivity extends AppCompatActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
-        ArrayAdapter<String> mForecastAdapter;
+
+        private RecyclerView recyclerView;
+        private RecyclerAdapter recyclerAdapter;
+        private LinearLayoutManager linearLayoutManager;
 
         public PlaceholderFragment() {
         }
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             // Create some dummy data for the ListView.  Here's a sample weekly forecast
             String[] data = {
@@ -75,27 +81,19 @@ public class MainActivity extends AppCompatActivity {
                     "Thurs 6/26 - Rainy - 18/11",
                     "Fri 6/27 - Foggy - 21/10",
                     "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
+                    "Sun 6/29 - Sunny - 20/7",
+                    "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
+                    "Sun 6/29 - Sunny - 20/7",
+                    "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
                     "Sun 6/29 - Sunny - 20/7"
             };
 
-            List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
-
-
-            // Now that we have some dummy forecast data, create an ArrayAdapter.
-            // The ArrayAdapter will take data from a source (like our dummy forecast) and
-            // use it to populate the ListView it's attached to.
-            mForecastAdapter =
-                    new ArrayAdapter<String>(
-                            getActivity(), // The current context (this activity)
-                            R.layout.list_item_forecast, // The name of the layout ID.
-                            R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                            weekForecast);
-
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-            // Get a reference to the ListView, and attach this adapter to it.
-            ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-            listView.setAdapter(mForecastAdapter);
+            recyclerView = (RecyclerView) rootView.findViewById(R.id.listview_forecast);
+            recyclerAdapter = new RecyclerAdapter();
+            recyclerAdapter.setDataSource(data);
+            linearLayoutManager = new LinearLayoutManager(rootView.getContext());
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(recyclerAdapter);
 
             return rootView;
         }
